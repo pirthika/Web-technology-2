@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGPA Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #d1292c;
+        }
+
+        .result {
+            text-align: center;
+            font-size: 22px;
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>SGPA Calculator</h1>
+
+    <div id="input-container">
+        <label for="subjects">Enter Number of Subjects:</label><br><br>
+        <input type="number" id="subjects" min="1" placeholder="Number of subjects"><br><br>
+
+        <button onclick="generateFields()">Next</button><br><br><br>
+    </div>
+
+    <div id="grade-inputs"></div>
+    <div class="result" id="sgpa-result"></div>
+</div>
+
+<script>
+    function generateFields() {
+        const numSubjects = document.getElementById('subjects').value;
+        const container = document.getElementById('grade-inputs');
+        container.innerHTML = '';
+
+        if (numSubjects > 0) {
+            for (let i = 0; i < numSubjects; i++) {
+                const gradeField = document.createElement('div');
+                gradeField.innerHTML = `
+                    <label>Subject ${i + 1}:</label>
+                    <input type="number" id="grade${i}" placeholder="Enter grade point (0 to 10)" min="0" max="10">
+                    <input type="number" id="credit${i}" placeholder="Enter credits for the subject" min="1">
+                `;
+                container.appendChild(gradeField);
+            }
+
+            const calculateButton = document.createElement('button');
+            calculateButton.textContent = 'Calculate SGPA';
+            calculateButton.onclick = calculateSGPA;
+            container.appendChild(calculateButton);
+        }
+    }
+
+    function calculateSGPA() {
+        const numSubjects = document.getElementById('subjects').value;
+        let totalPoints = 0;
+        let totalCredits = 0;
+
+        for (let i = 0; i < numSubjects; i++) {
+            const grade = parseFloat(document.getElementById(`grade${i}`).value);
+            const credit = parseFloat(document.getElementById(`credit${i}`).value);
+
+            if (!isNaN(grade) && !isNaN(credit)) {
+                totalPoints += grade * credit;
+                totalCredits += credit;
+            }
+        }
+
+        if (totalCredits > 0) {
+            const sgpa = totalPoints / totalCredits;
+            document.getElementById('sgpa-result').innerText = `Your SGPA is: ${sgpa.toFixed(2)}`;
+        } else {
+            document.getElementById('sgpa-result').innerText = 'Please enter valid grades and credits for all subjects.';
+        }
+    }
+</script>
+
+</body>
+</html>
